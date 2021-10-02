@@ -31,9 +31,14 @@ from random_user_agent.user_agent import UserAgent as UA
 from random_user_agent.params import SoftwareName, OperatingSystem
 
 
+#ENTER key config
+if platform.system() == 'Darwin':
+    enter_key = Keys.RETURN
+else:
+    enter_key = Keys.ENTER
+
 #Run single instance of a web driver dming everyone in a given channel
 def run_single_instance(username, password, channel_url='https://discord.com/channels/888593181132865576/888593181132865579', message='testing'):
-
     #setup user agent
     options = webdriver.ChromeOptions()
     software_names = [SoftwareName.CHROME.value]
@@ -55,6 +60,7 @@ def run_single_instance(username, password, channel_url='https://discord.com/cha
         driver.close()
         sys.exit("Unable to connect to URL - Check internet and proxy")
 
+    #login
     ac = ActionChains(driver)
     ac.send_keys(username)
     ac.send_keys(Keys.TAB)
@@ -63,11 +69,10 @@ def run_single_instance(username, password, channel_url='https://discord.com/cha
     ac.send_keys(Keys.TAB)
     time.sleep(1)
     ac.send_keys(Keys.TAB)
-    ac.send_keys(Keys.RETURN)
+    ac.send_keys(enter_key)
     ac.perform()
     
-    # pause = input('Press Enter once ads are gone')
-    # time.sleep(5)
+    #kill any popups
     time.sleep(1)
     ac = ActionChains(driver)
     ac.send_keys(Keys.ESCAPE)
@@ -82,6 +87,7 @@ def run_single_instance(username, password, channel_url='https://discord.com/cha
     ac.perform()
     time.sleep(5)
 
+    #start DMing members
     members = driver.find_elements_by_xpath("//div[starts-with(@class, 'member-')]")
     num_members = len(members)
     for i in range(1, num_members):
@@ -91,9 +97,6 @@ def run_single_instance(username, password, channel_url='https://discord.com/cha
         ac.perform()
         time.sleep(1)
         type_message(message, driver)
-        # ac = ActionChains(driver)
-        # ac.send_keys(Keys.RETURN)
-        # ac.perform()
         time.sleep(1)
         driver.back()
         members = driver.find_elements_by_xpath("//div[starts-with(@class, 'member-')]")
@@ -113,7 +116,7 @@ def type_message(msg, driver):
             ac.send_keys(Keys.SPACE)
             ac.perform()
         ac = ActionChains(driver)
-        ac.send_keys(Keys.RETURN)
+        ac.send_keys(enter_key)
         ac.perform()
 
 
@@ -137,9 +140,6 @@ if __name__ == '__main__':
 
     with open('./message.txt') as f:
         message = f.read()
-        print(contents)
-        print(contents.split('\n\n'))
-        input('pause')
 
     if (os.path.isfile('./config.json')):
         use_config = input("\n\nSaved configurations detected. Do you wish to use your saved account info? (y/n) ")
