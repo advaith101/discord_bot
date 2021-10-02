@@ -46,7 +46,8 @@ def run_single_instance(username, password, channel_url='https://discord.com/cha
 
     #start web driver and navigate to channel page
     LOGGER = logging.getLogger()
-    driver = webdriver.Chrome(options=options, executable_path=r'/Users/advaith/Desktop/discord_selenium_bot/chromedriver')
+    driver_path = os.getcwd() + '/chromedriver'
+    driver = webdriver.Chrome(options=options, executable_path=driver_path)
     try:
         driver.get(channel_url)
     except Exception as e:
@@ -107,7 +108,7 @@ def type_message(msg, driver):
                 ac = ActionChains(driver)
                 ac.send_keys(letter)
                 ac.perform()
-                time.sleep(.01)
+                time.sleep(.002)
             ac = ActionChains(driver)
             ac.send_keys(Keys.SPACE)
             ac.perform()
@@ -124,15 +125,21 @@ if __name__ == '__main__':
     print("\n\nDiscobot Initializing...")
     print(f"Bot Start Time: {start_time}")
 
-    message = "Lilcoin ($LIL) is the first token that uses self-arbitrage to rewards holders with no fees/reflections. At its heart is an algorithm that monitors "
-    message += "$LIL across the exchanges it is listed on, 'arbing' $LIL any time there is a price mismatch. This generates claimable profits for holders, "
-    message += "which would otherwise be pocketed by bots and institutions. "
-    message += "\n\nThe Lilguys NFT Collection is a collection of 8500 unique, randomly-generated characters living on the Etherium Blockchain. Art curated by "
-    message += "the acclaimed graphic designer behind Lilcoin. Each lilguy grants its owner access to 125k $LIL. Each $LIL owner will get a chance to win 1 of 10 lilguy giveaways. "
-    message += "\n\nLilcoin presale LIVE on website, Uniswap launch on October 4. Lilguys NFT Collection dropping October 8. Join our growing community! "
-    message += "\n\nDiscord: https://discord.com/invite/ffrg5ubp"
-    message += "\n\nTelegram: https://t.me/lilcoin_community"
-    message += "\n\nWebsite: https://www.lilcoin.org"
+    # message = "Lilcoin ($LIL) is the first token that uses self-arbitrage to rewards holders with no fees/reflections. At its heart is an algorithm that monitors "
+    # message += "$LIL across the exchanges it is listed on, 'arbing' $LIL any time there is a price mismatch. This generates claimable profits for holders, "
+    # message += "which would otherwise be pocketed by bots and institutions. "
+    # message += "\n\nThe Lilguys NFT Collection is a collection of 8500 unique, randomly-generated characters living on the Etherium Blockchain. Art curated by "
+    # message += "the acclaimed graphic designer behind Lilcoin. Each lilguy grants its owner access to 125k $LIL. Each $LIL owner will get a chance to win 1 of 10 lilguy giveaways. "
+    # message += "\n\nLilcoin presale LIVE on website, Uniswap launch on October 4. Lilguys NFT Collection dropping October 8. Join our growing community! "
+    # message += "\n\nDiscord: https://discord.com/invite/ffrg5ubp"
+    # message += "\n\nTelegram: https://t.me/lilcoin_community"
+    # message += "\n\nWebsite: https://www.lilcoin.org"
+
+    with open('./message.txt') as f:
+        message = f.read()
+        print(contents)
+        print(contents.split('\n\n'))
+        input('pause')
 
     if (os.path.isfile('./config.json')):
         use_config = input("\n\nSaved configurations detected. Do you wish to use your saved account info? (y/n) ")
@@ -142,7 +149,7 @@ if __name__ == '__main__':
             username = config['username']
             password = config['password']
             channel_url = input("\n\nEnter the channel url of the discord server you wish to Mass DM\n(e.g. https://discord.com/channels/888593181132865576/888593181132865579)\n\n")
-            run_single_instance(username=username, password=password, message=message)
+            run_single_instance(channel_url=channel_url, username=username, password=password, message=message)
         else:
             channel_url = input("\n\nEnter the channel url of the discord server you wish to Mass DM\n(e.g. https://discord.com/channels/888593181132865576/888593181132865579)\n\n")
             username = input("\n\nEnter your username (e.g. calm_dentist@gmail.com): ")
@@ -155,7 +162,7 @@ if __name__ == '__main__':
                 }
                 with open('./config.json', 'w', encoding='utf-8') as f:
                     json.dump(config, f, ensure_ascii=False, indent=4)
-            run_single_instance(username=username, password=password, message=message)
+            run_single_instance(channel_url=channel_url, username=username, password=password, message=message)
     else:
         channel_url = input("\n\nEnter the channel url of the discord server you wish to Mass DM\n(e.g. https://discord.com/channels/888593181132865576/888593181132865579)\n\n")
         username = input("\n\nEnter your username (e.g. calm_dentist@gmail.com): ")
@@ -168,7 +175,7 @@ if __name__ == '__main__':
             }
             with open('./config.json', 'w', encoding='utf-8') as f:
                 json.dump(config, f, ensure_ascii=False, indent=4)
-        run_single_instance(username=username, password=password, message=message)
+        run_single_instance(channel_url=channel_url, username=username, password=password, message=message)
 
     end_time = time.localtime()
     end_time = time.strftime("%H:%M:%S", end_time)
