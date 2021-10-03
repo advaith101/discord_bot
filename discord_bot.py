@@ -71,6 +71,7 @@ def run_single_instance(username, password, channel_url='https://discord.com/cha
     ac.send_keys(Keys.TAB)
     ac.send_keys(enter_key)
     ac.perform()
+    input('Press any button after captcha (after you are logged in)')
     
     #kill any popups
     time.sleep(1)
