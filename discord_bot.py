@@ -88,18 +88,49 @@ def run_single_instance(username, password, channel_url='https://discord.com/cha
     time.sleep(5)
 
     #start DMing members
-    members = driver.find_elements_by_xpath("//div[starts-with(@class, 'member-')]")
+    members = None
+    try:
+        members = WebDriverWait(driver, 7).until(EC.visibility_of_all_elements_located((By.XPATH, "//div[starts-with(@class, 'member-')]")))
+    except:
+        print("\n\nUnable to find members.. trying again")
+        sys.exit(0)
     num_members = len(members)
-    for i in range(1, num_members):
-        time.sleep(1)
-        ac = ActionChains(driver)
-        ac.move_to_element(members[i]).click()
-        ac.perform()
-        time.sleep(1)
+    # print(num_members)
+    # input('pause')
+    for i in range(num_members):
+        rand = np.random.randint(low=1000, high=2500)/1000
+        time.sleep(rand)
+        for j in range(3):
+            try:
+                rand2 = np.random.randint(low=0, high=num_members) + 1
+                elem = WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.XPATH, f"//div[starts-with(@class, 'member-')][{rand2}]")))
+                ac = ActionChains(driver)
+                ac.move_to_element(elem).click()
+                ac.perform()
+                break
+            except:
+                continue
+        rand = np.random.randint(low=1000, high=2500)/1000
+        time.sleep(rand)
         type_message(message, driver)
-        time.sleep(1)
+        rand = np.random.randint(low=1000, high=3000)/1000
+        time.sleep(rand)
         driver.back()
-        members = driver.find_elements_by_xpath("//div[starts-with(@class, 'member-')]")
+        # try:
+        #     members_list = WebDriverWait(driver, 7).until(EC.visibility_of_element_located((By.XPATH, "//aside[starts-with(@class, 'membersWrap-')][0]/div[0]/div[0]")))
+        #     # members_list.sendKeys(Keys.PAGE_DOWN);
+        #     members = WebDriverWait(driver, 7).until(EC.visibility_of_all_elements_located((By.XPATH, "//div[starts-with(@class, 'member-')]")))
+        # except:
+        #     print("\n\nUnable to find members list.. try again")
+        #     sys.exit(0)
+        # members_list = WebDriverWait(driver, 7).until(EC.visibility_of_element_located((By.XPATH, "//aside[starts-with(@class, 'membersWrap-')]")))
+        # ac = ActionChains(driver)
+        # ac.move_to_element(members_list).send_keys(Keys.END)
+        # ac.perform()
+        # elem = 
+        # driver.execute_script("arguments[0].scrollIntoView();", element)
+        # members_list.send_keys(Keys.PAGE_DOWN);
+        members = WebDriverWait(driver, 7).until(EC.visibility_of_all_elements_located((By.XPATH, "//div[starts-with(@class, 'member-')]")))
 
 
 def type_message(msg, driver):
@@ -111,13 +142,18 @@ def type_message(msg, driver):
                 ac = ActionChains(driver)
                 ac.send_keys(letter)
                 ac.perform()
-                time.sleep(.002)
+                rand = np.random.randint(low=4, high=10)/1000
+                time.sleep(rand)
             ac = ActionChains(driver)
             ac.send_keys(Keys.SPACE)
             ac.perform()
+            rand = np.random.randint(low=60, high=140)/1000
+            time.sleep(rand)
         ac = ActionChains(driver)
         ac.send_keys(enter_key)
         ac.perform()
+        rand = np.random.randint(low=1000, high=2500)/1000
+        time.sleep(rand)
 
 
 
