@@ -95,15 +95,14 @@ def run_single_instance(username, password, channel_url='https://discord.com/cha
     except:
         print("\n\nUnable to find members.. trying again")
         sys.exit(0)
-    num_members = len(members)
-    # print(num_members)
-    # input('pause')
-    for i in range(num_members):
+    
+    scroll_val = 1
+    for i in range(1, 1000):
         rand = np.random.randint(low=1000, high=2500)/1000
         time.sleep(rand)
         for j in range(3):
             try:
-                rand2 = np.random.randint(low=0, high=num_members) + 1
+                rand2 = np.random.randint(low=0, high=len(members)) + 1
                 elem = WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.XPATH, f"//div[starts-with(@class, 'member-')][{rand2}]")))
                 ac = ActionChains(driver)
                 ac.move_to_element(elem).click()
@@ -111,27 +110,40 @@ def run_single_instance(username, password, channel_url='https://discord.com/cha
                 break
             except:
                 continue
-        rand = np.random.randint(low=1000, high=2500)/1000
+        rand = np.random.randint(low=700, high=1500)/1000
         time.sleep(rand)
         type_message(message, driver)
-        rand = np.random.randint(low=1000, high=3000)/1000
+        rand = np.random.randint(low=700, high=1500)/1000
         time.sleep(rand)
         driver.back()
-        # try:
-        #     members_list = WebDriverWait(driver, 7).until(EC.visibility_of_element_located((By.XPATH, "//aside[starts-with(@class, 'membersWrap-')][0]/div[0]/div[0]")))
-        #     # members_list.sendKeys(Keys.PAGE_DOWN);
-        #     members = WebDriverWait(driver, 7).until(EC.visibility_of_all_elements_located((By.XPATH, "//div[starts-with(@class, 'member-')]")))
-        # except:
-        #     print("\n\nUnable to find members list.. try again")
-        #     sys.exit(0)
-        # members_list = WebDriverWait(driver, 7).until(EC.visibility_of_element_located((By.XPATH, "//aside[starts-with(@class, 'membersWrap-')]")))
-        # ac = ActionChains(driver)
-        # ac.move_to_element(members_list).send_keys(Keys.END)
-        # ac.perform()
-        # elem = 
-        # driver.execute_script("arguments[0].scrollIntoView();", element)
-        # members_list.send_keys(Keys.PAGE_DOWN);
-        members = WebDriverWait(driver, 7).until(EC.visibility_of_all_elements_located((By.XPATH, "//div[starts-with(@class, 'member-')]")))
+
+        if i % 4 == 0:
+            scroll_val = (i//4) + 1
+            for k in range(scroll_val):
+                time.sleep(.5)
+                members = WebDriverWait(driver, 7).until(EC.visibility_of_all_elements_located((By.XPATH, "//div[starts-with(@class, 'member-')]")))
+                try:
+                    elem = WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.XPATH, f"//div[starts-with(@class, 'member-')][{len(members)}]")))
+                    ac = ActionChains(driver)
+                    ac.move_to_element(elem).click()
+                    ac.perform()
+                except:
+                    continue
+            members = WebDriverWait(driver, 7).until(EC.visibility_of_all_elements_located((By.XPATH, "//div[starts-with(@class, 'member-')]")))
+        else:
+            for k in range(scroll_val):
+                time.sleep(.5)
+                members = WebDriverWait(driver, 7).until(EC.visibility_of_all_elements_located((By.XPATH, "//div[starts-with(@class, 'member-')]")))
+                if i >= 4:
+                    try:
+                        elem = WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.XPATH, f"//div[starts-with(@class, 'member-')][{len(members)}]")))
+                        ac = ActionChains(driver)
+                        ac.move_to_element(elem).click()
+                        ac.perform()
+                    except:
+                        continue
+            members = WebDriverWait(driver, 7).until(EC.visibility_of_all_elements_located((By.XPATH, "//div[starts-with(@class, 'member-')]")))
+
 
 
 def type_message(msg, driver):
