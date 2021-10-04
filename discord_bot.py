@@ -45,8 +45,6 @@ def run_single_instance(username, password, channel_url='https://discord.com/cha
 	operating_systems = [OperatingSystem.WINDOWS.value, OperatingSystem.LINUX.value]
 	user_agent_rotator = UA(software_names=software_names, operating_systems=operating_systems, limit=100)
 	user_agent = user_agent_rotator.get_random_user_agent()
-	# print('\n')
-	# print(user_agent)
 	options.add_argument(f'user-agent={user_agent}')
 
 	#start web driver and navigate to channel page
@@ -113,7 +111,6 @@ def run_single_instance(username, password, channel_url='https://discord.com/cha
 					break
 				except:
 					continue
-
 			if success:
 				rand = np.random.randint(low=700, high=1500)/1500
 				time.sleep(rand)
