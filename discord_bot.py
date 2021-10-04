@@ -83,57 +83,57 @@ def run_single_instance(username, password, channel_url='https://discord.com/cha
 		print("\n\nUnable to find members.. trying again")
 		sys.exit(0)
 	
-	scroll_val = 1
+	scroll_val = 2
+	member_index = 1
 	for i in range(1, 1000):
 		try:
-			rand = np.random.randint(low=1000, high=2500)/1000
-			time.sleep(rand)
-			for j in range(3):
+			for k in range(scroll_val):
+				time.sleep(.5)
+				members = WebDriverWait(driver, 7).until(EC.visibility_of_all_elements_located((By.XPATH, "//div[starts-with(@class, 'member-')]")))
 				try:
-					rand2 = np.random.randint(low=0, high=len(members)) + 1
-					elem = WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.XPATH, f"//div[starts-with(@class, 'member-')][{rand2}]")))
+					elem = WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.XPATH, f"//div[starts-with(@class, 'member-')][{len(members)}]")))
 					ac = ActionChains(driver)
 					ac.move_to_element(elem).click()
 					ac.perform()
+				except:
+					continue
+			members = WebDriverWait(driver, 7).until(EC.visibility_of_all_elements_located((By.XPATH, "//div[starts-with(@class, 'member-')]")))
+
+			rand = np.random.randint(low=1000, high=2500)/1000
+			time.sleep(rand)
+			success = False
+			for j in range(3):
+				try:
+					rand2 = np.random.randint(low=0, high=len(members)) + 1
+					elem = WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.XPATH, f"//div[starts-with(@class, 'member-')][{min(rand2, len(members))}]")))
+					ac = ActionChains(driver)
+					ac.move_to_element(elem).click()
+					ac.perform()
+					success = True
 					break
 				except:
 					continue
-			rand = np.random.randint(low=700, high=1500)/1000
-			time.sleep(rand)
-			type_message(message, driver)
-			rand = np.random.randint(low=700, high=1500)/1000
-			time.sleep(rand)
-			driver.back()
 
-			if i % 4 == 0:
-				scroll_val = (i//4) + 1
-				for k in range(scroll_val):
-					time.sleep(.5)
-					members = WebDriverWait(driver, 7).until(EC.visibility_of_all_elements_located((By.XPATH, "//div[starts-with(@class, 'member-')]")))
-					try:
-						elem = WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.XPATH, f"//div[starts-with(@class, 'member-')][{len(members)}]")))
-						ac = ActionChains(driver)
-						ac.move_to_element(elem).click()
-						ac.perform()
-					except:
-						continue
-				members = WebDriverWait(driver, 7).until(EC.visibility_of_all_elements_located((By.XPATH, "//div[starts-with(@class, 'member-')]")))
+			if success:
+				rand = np.random.randint(low=700, high=1500)/1500
+				time.sleep(rand)
+				type_message(message, driver)
+				rand = np.random.randint(low=700, high=1500)/1500
+				time.sleep(rand)
+				driver.back()
 			else:
-				for k in range(scroll_val):
-					time.sleep(.5)
-					members = WebDriverWait(driver, 7).until(EC.visibility_of_all_elements_located((By.XPATH, "//div[starts-with(@class, 'member-')]")))
-					if i >= 4:
-						try:
-							elem = WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.XPATH, f"//div[starts-with(@class, 'member-')][{len(members)}]")))
-							ac = ActionChains(driver)
-							ac.move_to_element(elem).click()
-							ac.perform()
-						except:
-							continue
-				members = WebDriverWait(driver, 7).until(EC.visibility_of_all_elements_located((By.XPATH, "//div[starts-with(@class, 'member-')]")))
+				scroll_val += 1
+				continue
+			
+			member_index += 1
 		except:
 			driver.refresh()
 			kill_popups(driver)
+			member_index = 1
+			continue
+		if i % 8 == 0:
+			member_index = 1
+			scroll_val += 1
 
 
 #kill any popups
@@ -162,12 +162,12 @@ def type_message(msg, driver):
 				ac = ActionChains(driver)
 				ac.send_keys(letter)
 				ac.perform()
-				rand = np.random.randint(low=4, high=10)/1000
+				rand = np.random.randint(low=4, high=10)/5000
 				time.sleep(rand)
 			ac = ActionChains(driver)
 			ac.send_keys(Keys.SPACE)
 			ac.perform()
-			rand = np.random.randint(low=60, high=140)/1000
+			rand = np.random.randint(low=60, high=140)/4000
 			time.sleep(rand)
 		ac = ActionChains(driver)
 		ac.send_keys(enter_key)
